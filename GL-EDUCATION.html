@@ -1,0 +1,712 @@
+<meta charset="utf-8" />
+<title></title>
+<!-- NRC clours dark grey #3c3c3c; light blue #eaf7fb;  --><!-- ********************************************************* CSS and INCLUDES - THESE DEFINE THE LAYOUT OF THE FORM ******************************************************************** -->
+<link href="../dhis-web-commons/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="../dhis-web-commons/font-awesome/css/font-awesome.min.css?_rev=21841" rel="stylesheet" type="text/css" />
+<link href="../favicon.ico" rel="shortcut icon" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.css" /><script type="text/javascript" src="../dhis-web-commons/bootstrap/js/bootstrap.min.js">
+</script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js">
+</script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+<style type="text/css">.nrcsubsection /* spacer inbetween tables */
+{  
+    background-color: #fff;  /* white */
+    height: 5px;
+}
+
+input.entryfield {
+width:  70px;
+height: 18px;
+padding: 2px;
+}
+input.dataelementtotal 
+{
+width:  70px;
+height: 18px;
+padding: 2px;   
+}
+input.indicator
+{
+width:  70px;
+height: 18px;
+padding: 2px;   
+}
+tr:hover {background-color: #e5e5e5}
+
+td {
+padding: 2px;
+height: 16px;
+text-align: center;
+}
+td.nrcindicatorName {
+text-align: left;
+}
+td.lastinrow {
+background-color: #eee;
+text-align: center;
+}
+th.nrcinfoheader {
+text-align: left;
+border-bottom: none;
+width: 100%;
+}
+th.nrcdataheader{
+text-align: center;
+border-bottom: 1px solid #ddd;
+background-color: #eaf7fb;
+white-space: nowrap;
+padding-left: 10px;
+padding-right: 10px;
+}
+th.nrctotalheader {
+text-align: center;
+border-bottom: 1px solid #ddd;
+background-color: #eee;
+white-space: nowrap;
+padding-left: 10px;
+padding-right: 10px;
+}
+.panel {
+margin-bottom: 7px;
+}
+
+.panel-body {
+padding-top: 0;
+padding-left: 8px;
+padding-right: 8px;
+padding-bottom: 4px;
+}
+
+.panel-default > .panel-heading {
+    background-color: #3c3c3c; 
+    border-color: #3c3c3c;
+    padding: 7px;
+    margin-bottom: 5px;
+    cursor: move;
+}
+a.nrc-panel-title {
+
+color: white;
+    cursor: pointer;
+}
+
+/* CSS Method for adding Font Awesome Chevron Icons */
+
+.accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family:'FontAwesome';
+    content:"\f077";
+    float: right;
+    color: white !important;
+}
+.panel-heading.collapsed .accordion-toggle:after {
+    /* symbol for "collapsed" panels */
+    content:"\f078";
+}
+</style>
+<!-- ***********************************************************JS Functions******************************************************************** --><script>
+
+$(document).ready(function(){
+  
+    //could change this to a bootstrap popover potentially and have the data in a hidden field  - these would be specific notes on completion
+	// could have a button to put in the notes??
+	// could also potentially have checkboxes in each row and a button to hide these (or the sections drop down to have subsections)
+	
+	 var panelList = $('#accordion');
+     var options = [];	
+	 
+    $('[data-toggle="tooltip"]').tooltip(); 
+    $(".panel-heading").addClass("collapsed");
+
+		 //HANDLER FOR SEARCH FIELD
+         $('#filter').keyup(function () {
+
+            var rex = new RegExp($(this).val(), 'i');
+            $('.searchable tr').hide();
+            $('.searchable tr').filter(function () {
+                return rex.test($(this).text());
+            }).show();
+        });
+
+        panelList.sortable({
+            // Only make the .panel-heading child elements support dragging.
+            // Omit this to make then entire <li>...</li> draggable.
+            //handle: '.panel-heading', 
+            update: function() {
+                $('.panel', panelList).each(function(index, elem) {
+                     var $listItem = $(elem),
+                         newIndex = $listItem.index();
+
+                     // Persist the new indices.
+                });
+            }
+        });
+
+        $('.dropdown-menu a').on('click', function (event) {
+
+            var $target = $(event.currentTarget),
+              val = $target.attr('data-value'),
+              $inp = $target.find('input'),
+              idx;
+
+            if ((idx = options.indexOf(val)) > -1) {
+                options.splice(idx, 1);
+                setTimeout(function () { $inp.prop('checked', false) }, 0);
+            } else {
+                options.push(val);
+                setTimeout(function () { $inp.prop('checked', true) }, 0);
+            }
+
+            $(event.target).blur();
+            console.log(options);
+            showOptions(options);
+            //     $('#mylist').hide();
+            return false;
+
+        });
+
+            function showOptions(options) {
+            // $('#mylist li').hide();
+            //console.log("in my function")
+            //console.log(options.length);
+
+            $("#accordion li").each(function () {
+                var liText = $(this).attr('id');
+                $(this).hide();
+                //console.log("liText is " + liText)
+                for (counter = 0; counter < options.length; counter++) {
+                    //console.log(options[counter]);
+                    if (liText == options[counter]) {
+                        $(this).show();
+                        console.log("found");
+                    }
+                }
+            });
+        };
+    });
+
+
+</script><!-- *********************************************************END OF CSS, INCLUDES and SCRIPTS******************************************************************** -->
+<div class="commenetSpacer hidden">&nbsp;</div>
+<!-- *********************************************************Title******************************************************************** -->
+
+<div class="commenetSpacer hidden">&nbsp;</div>
+
+<div class="input-group col-xs-6">
+<div class="input-group"><span class="input-group-addon">Filter</span> <input class="form-control" id="filter" type="text" />
+<div class="input-group-btn"><button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">show/hide sections</button>
+
+<ul class="dropdown-menu pull-right">
+	<li><a class="small" data-value="EDUCATIONEnrollmentTraining" href="#" tabindex="-1"><input type="checkbox" />Enrolment, Training and Support</a></li>
+	<li><a class="small" data-value="EDUCATIONNfi" href="#" tabindex="-1"><input type="checkbox" />NFIs</a></li>
+	<li><a class="small" data-value="EDUCATIONCash" href="#" tabindex="-1"><input type="checkbox" />Cash and Vouchers</a></li>
+</ul>
+<!-- /btn-group --></div>
+<!-- /input-group --></div>
+<!-- /.col-lg-6 --></div>
+
+<h1 style="text-align: right;"><strong><span style="font-family:trebuchet ms,helvetica,sans-serif;">Education Mandatory</span></strong>&nbsp;</h1>
+<!-- *********************************************************END OF Title******************************************************************** -->
+
+<div class="commenetSpacer hidden">&nbsp;</div>
+
+<div class="commenetSpacer hidden">&nbsp;</div>
+
+<div class="commenetSpacer hidden">&nbsp;</div>
+
+<div class="commenetSpacer hidden">&nbsp;</div>
+
+<div class="commenetSpacer hidden">&nbsp;</div>
+
+<ul class="list-unstyled" id="accordion"><!-- ***********************************************************LIST OF COLLAPSABLE PANELS GOES HERE.******************************************************************** --><!-- ***********************************************************Section Start******************************************************************** -->
+	<li class="panel panel-default" id="EDUCATIONEnrollmentTraining">
+	<div class="panel-heading collapsed" data-target="#education-enrollTrainng" data-toggle="collapse">
+	<h5 class="panel-title accordion-toggle"><a class="nrc-panel-title">Enrolment, Training and Support</a></h5>
+	</div>
+
+	<div class="panel-collapse collapse in" id="education-enrollTrainng">
+	<div class="panel-body"><!-- ***********************************************************Tables go here************ -->
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Enrollment</th>
+				<th class="nrcdataheader" colspan="2">IDPs</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Refugees</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Host Community</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Other</th>
+				<th class="nrctotalheader" colspan="1" scope="col">Total</th>
+			</tr>
+			<tr>
+				<th class="nrcinfoheader">&nbsp;</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrctotalheader">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of learners enrolled YEP (GL-E1/Y)</td>
+				<td><input id="z9UmScdI2ua-Jsj0zseyZRy-val" title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E1/Y: # of learners enrolled (YEP) Male, IDP ]" /></td>
+				<td><input id="z9UmScdI2ua-TSItPcR5Co0-val" title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E1/Y: # of learners enrolled (YEP) Female, IDP ]" /></td>
+				<td><input id="z9UmScdI2ua-LrwymE2so9E-val" title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E1/Y: # of learners enrolled (YEP) Male, Refugee ]" /></td>
+				<td><input id="z9UmScdI2ua-fgK1KOTsYTX-val" title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E1/Y: # of learners enrolled (YEP) Female, Refugee ]" /></td>
+				<td><input id="z9UmScdI2ua-LtjBY2tHrCQ-val" title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E1/Y: # of learners enrolled (YEP) Male, Host Community ]" /></td>
+				<td><input id="z9UmScdI2ua-n4G7V7Ij9M8-val" title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E1/Y: # of learners enrolled (YEP) Female, Host Community ]" /></td>
+				<td><input id="z9UmScdI2ua-mDkp8daNEq9-val" title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E1/Y: # of learners enrolled (YEP) Male, Other ]" /></td>
+				<td><input id="z9UmScdI2ua-DUVdAs0fh3D-val" title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E1/Y: # of learners enrolled (YEP) Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="z9UmScdI2ua" id="totalz9UmScdI2ua" name="total" readonly="readonly" title="GL-E1/Y: # of learners enrolled (YEP)" value="[ GL-E1/Y: # of learners enrolled (YEP) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of learners enrolled Accelerated Learning (GL-E1/A)</td>
+				<td><input id="GFd19TMOHqT-Jsj0zseyZRy-val" title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E1/A: # of learners enrolled (AE) Male, IDP ]" /></td>
+				<td><input id="GFd19TMOHqT-TSItPcR5Co0-val" title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E1/A: # of learners enrolled (AE) Female, IDP ]" /></td>
+				<td><input id="GFd19TMOHqT-LrwymE2so9E-val" title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E1/A: # of learners enrolled (AE) Male, Refugee ]" /></td>
+				<td><input id="GFd19TMOHqT-fgK1KOTsYTX-val" title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E1/A: # of learners enrolled (AE) Female, Refugee ]" /></td>
+				<td><input id="GFd19TMOHqT-LtjBY2tHrCQ-val" title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E1/A: # of learners enrolled (AE) Male, Host Community ]" /></td>
+				<td><input id="GFd19TMOHqT-n4G7V7Ij9M8-val" title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E1/A: # of learners enrolled (AE) Female, Host Community ]" /></td>
+				<td><input id="GFd19TMOHqT-mDkp8daNEq9-val" title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E1/A: # of learners enrolled (AE) Male, Other ]" /></td>
+				<td><input id="GFd19TMOHqT-DUVdAs0fh3D-val" title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E1/A: # of learners enrolled (AE) Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="GFd19TMOHqT" id="totalGFd19TMOHqT" name="total" readonly="readonly" title="GL-E1/A: # of learners enrolled (AE)" value="[ GL-E1/A: # of learners enrolled (AE) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of learners enrolled EiE (GL-E1/E)</td>
+				<td><input id="yB0sFkRnDIK-Jsj0zseyZRy-val" title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E1/E: # of learners enrolled (EiE) Male, IDP ]" /></td>
+				<td><input id="yB0sFkRnDIK-TSItPcR5Co0-val" title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E1/E: # of learners enrolled (EiE) Female, IDP ]" /></td>
+				<td><input id="yB0sFkRnDIK-LrwymE2so9E-val" title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E1/E: # of learners enrolled (EiE) Male, Refugee ]" /></td>
+				<td><input id="yB0sFkRnDIK-fgK1KOTsYTX-val" title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E1/E: # of learners enrolled (EiE) Female, Refugee ]" /></td>
+				<td><input id="yB0sFkRnDIK-LtjBY2tHrCQ-val" title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E1/E: # of learners enrolled (EiE) Male, Host Community ]" /></td>
+				<td><input id="yB0sFkRnDIK-n4G7V7Ij9M8-val" title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E1/E: # of learners enrolled (EiE) Female, Host Community ]" /></td>
+				<td><input id="yB0sFkRnDIK-mDkp8daNEq9-val" title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E1/E: # of learners enrolled (EiE) Male, Other ]" /></td>
+				<td><input id="yB0sFkRnDIK-DUVdAs0fh3D-val" title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E1/E: # of learners enrolled (EiE) Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="yB0sFkRnDIK" id="totalyB0sFkRnDIK" name="total" readonly="readonly" title="GL-E1/E: # of learners enrolled (EiE)" value="[ GL-E1/E: # of learners enrolled (EiE) ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Teachers Trained</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrctotalheader">Total</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of teachers trained YEP (GL-E2)</td>
+				<td><input id="nd6RgErD9pS-ppLwES2u52Q-val" title="nd6RgErD9pS - GL-E2/Y: # of teachers trained (YEP) - ppLwES2u52Q - Male - INTEGER" value="[ GL-E2/Y: # of teachers trained (YEP) Male ]" /></td>
+				<td><input id="nd6RgErD9pS-shbGeNp6nbM-val" title="nd6RgErD9pS - GL-E2/Y: # of teachers trained (YEP) - shbGeNp6nbM - Female - INTEGER" value="[ GL-E2/Y: # of teachers trained (YEP) Female ]" /></td>
+				<td class="lastinrow"><input dataelementid="nd6RgErD9pS" id="totalnd6RgErD9pS" name="total" readonly="readonly" title="GL-E2/Y: # of teachers trained (YEP)" value="[ GL-E2/Y: # of teachers trained (YEP) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of teachers trained AE (GL-E2)</td>
+				<td><input id="jL6wjLwCNy5-ppLwES2u52Q-val" title="jL6wjLwCNy5 - GL-E2/A: # of teachers trained (AE) - ppLwES2u52Q - Male - INTEGER" value="[ GL-E2/A: # of teachers trained (AE) Male ]" /></td>
+				<td><input id="jL6wjLwCNy5-shbGeNp6nbM-val" title="jL6wjLwCNy5 - GL-E2/A: # of teachers trained (AE) - shbGeNp6nbM - Female - INTEGER" value="[ GL-E2/A: # of teachers trained (AE) Female ]" /></td>
+				<td class="lastinrow"><input dataelementid="jL6wjLwCNy5" id="totaljL6wjLwCNy5" name="total" readonly="readonly" title="GL-E2/A: # of teachers trained (AE)" value="[ GL-E2/A: # of teachers trained (AE) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of teachers trained EiE (GL-E2)</td>
+				<td><input id="BVrBUxlQmyB-ppLwES2u52Q-val" title="BVrBUxlQmyB - GL-E2/E: # of teachers trained (EiE) - ppLwES2u52Q - Male - INTEGER" value="[ GL-E2/E: # of teachers trained (EiE) Male ]" /></td>
+				<td><input id="BVrBUxlQmyB-shbGeNp6nbM-val" title="BVrBUxlQmyB - GL-E2/E: # of teachers trained (EiE) - shbGeNp6nbM - Female - INTEGER" value="[ GL-E2/E: # of teachers trained (EiE) Female ]" /></td>
+				<td class="lastinrow"><input dataelementid="BVrBUxlQmyB" id="totalBVrBUxlQmyB" name="total" readonly="readonly" title="GL-E2/E: # of teachers trained (EiE)" value="[ GL-E2/E: # of teachers trained (EiE) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of teachers trained Standalone (GL-E2)</td>
+				<td><input id="kAccb2XCwlW-ppLwES2u52Q-val" title="kAccb2XCwlW - GL-E2: # of teachers trained (stand alone) - ppLwES2u52Q - Male - INTEGER" value="[ GL-E2: # of teachers trained (stand alone) Male ]" /></td>
+				<td><input id="kAccb2XCwlW-shbGeNp6nbM-val" title="kAccb2XCwlW - GL-E2: # of teachers trained (stand alone) - shbGeNp6nbM - Female - INTEGER" value="[ GL-E2: # of teachers trained (stand alone) Female ]" /></td>
+				<td class="lastinrow"><input dataelementid="kAccb2XCwlW" id="totalkAccb2XCwlW" name="total" readonly="readonly" title="GL-E2: # of teachers trained (stand alone)" value="[ GL-E2: # of teachers trained (stand alone) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="lastinrow">&nbsp;</td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of teacher training packages provided (GL-E4)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="lastinrow"><input id="br6RbzAYh6J-zq28YZ0m2lz-val" title="br6RbzAYh6J - GL-E4: # of teacher training packages provided - zq28YZ0m2lz - default - INTEGER" value="[ GL-E4: # of teacher training packages provided default ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Non - Teachers Trained</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrctotalheader">Total</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of non- teachers trained Standalone (GL-E3)</td>
+				<td><input id="mnd9Irnkz0G-ppLwES2u52Q-val" title="mnd9Irnkz0G - GL-E3: # of non-teaching education professionals trained (Standalone) - ppLwES2u52Q - Male - INTEGER" value="[ GL-E3: # of non-teaching education professionals trained (Standalone) Male ]" /></td>
+				<td><input id="mnd9Irnkz0G-shbGeNp6nbM-val" title="mnd9Irnkz0G - GL-E3: # of non-teaching education professionals trained (Standalone) - shbGeNp6nbM - Female - INTEGER" value="[ GL-E3: # of non-teaching education professionals trained (Standalone) Female ]" /></td>
+				<td class="lastinrow"><input dataelementid="mnd9Irnkz0G" id="totalmnd9Irnkz0G" name="total" readonly="readonly" title="GL-E3: # of non-teaching education professionals trained (Standalone)" value="[ GL-E3: # of non-teaching education professionals trained (Standalone) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of non- teacher training packages provided (GL-E5)</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td class="lastinrow"><input id="bZ0KHyZ5ZCo-zq28YZ0m2lz-val" title="bZ0KHyZ5ZCo - GL-E5: # of  training packages  provided for non-teaching education professionals - zq28YZ0m2lz - default - INTEGER" value="[ GL-E5: # of  training packages  provided for non-teaching education professionals default ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Other systems Support</th>
+				<th class="nrctotalheader">Total</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of strategy guidance documents produced (GL-E6)</td>
+				<td class="lastinrow"><input dataelementid="DgYUzjKgLc4" id="totalDgYUzjKgLc4" name="total" readonly="readonly" title="GL-E6: # of strategy guidance documents produced" value="[ GL-E6: # of strategy guidance documents produced ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName">&nbsp;</td>
+				<td class="lastinrow">&nbsp;</td>
+			</tr>
+		</tbody>
+		<tbody class="searchable">
+		</tbody>
+	</table>
+	</div>
+	</div>
+	</li>
+	<!-- ***********************************************************End Section******************************************************************** --><!-- ***********************************************************Section Start******************************************************************** -->
+	<li class="panel panel-default" id="EDUCATIONNfi">
+	<div class="panel-heading" data-target="#education-nfi" data-toggle="collapse">
+	<h5 class="panel-title accordion-toggle"><a class="nrc-panel-title">Non-Food Items (Education)</a></h5>
+	</div>
+
+	<div class="panel-collapse collapse in" id="education-nfi">
+	<div class="panel-body"><!-- ***********************************************************Tables go here************ -->
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Individuals Receiving NFIs&nbsp;</th>
+				<th class="nrcdataheader" colspan="2">IDPs</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Refugees</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Host Community</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Other</th>
+				<th class="nrctotalheader" colspan="1" scope="col">Total</th>
+			</tr>
+			<tr>
+				<th class="nrcinfoheader">&nbsp;</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrctotalheader">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of individuals receiving NFI Kits YEP (GL-E71)</td>
+				<td><input id="Me7cJFbRI99-Jsj0zseyZRy-val" title="Me7cJFbRI99 - GL-E71/Y: # of individuals receiving NFI kits (YEP) - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) Male, IDP ]" /></td>
+				<td><input id="Me7cJFbRI99-TSItPcR5Co0-val" title="Me7cJFbRI99 - GL-E71/Y: # of individuals receiving NFI kits (YEP) - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) Female, IDP ]" /></td>
+				<td><input id="Me7cJFbRI99-LrwymE2so9E-val" title="Me7cJFbRI99 - GL-E71/Y: # of individuals receiving NFI kits (YEP) - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) Male, Refugee ]" /></td>
+				<td><input id="Me7cJFbRI99-fgK1KOTsYTX-val" title="Me7cJFbRI99 - GL-E71/Y: # of individuals receiving NFI kits (YEP) - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) Female, Refugee ]" /></td>
+				<td><input id="Me7cJFbRI99-LtjBY2tHrCQ-val" title="Me7cJFbRI99 - GL-E71/Y: # of individuals receiving NFI kits (YEP) - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) Male, Host Community ]" /></td>
+				<td><input id="Me7cJFbRI99-n4G7V7Ij9M8-val" title="Me7cJFbRI99 - GL-E71/Y: # of individuals receiving NFI kits (YEP) - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) Female, Host Community ]" /></td>
+				<td><input id="Me7cJFbRI99-mDkp8daNEq9-val" title="Me7cJFbRI99 - GL-E71/Y: # of individuals receiving NFI kits (YEP) - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) Male, Other ]" /></td>
+				<td><input id="Me7cJFbRI99-DUVdAs0fh3D-val" title="Me7cJFbRI99 - GL-E71/Y: # of individuals receiving NFI kits (YEP) - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="Me7cJFbRI99" id="totalMe7cJFbRI99" name="total" readonly="readonly" title="GL-E71/Y: # of individuals receiving NFI kits (YEP)" value="[ GL-E71/Y: # of individuals receiving NFI kits (YEP) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of individuals receiving NFI Kits AE (GL-E71)</td>
+				<td><input id="MIb4wvTqFsw-Jsj0zseyZRy-val" title="MIb4wvTqFsw - GL-E71/A: # of individuals receiving NFI kits (AE) - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) Male, IDP ]" /></td>
+				<td><input id="MIb4wvTqFsw-TSItPcR5Co0-val" title="MIb4wvTqFsw - GL-E71/A: # of individuals receiving NFI kits (AE) - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) Female, IDP ]" /></td>
+				<td><input id="MIb4wvTqFsw-LrwymE2so9E-val" title="MIb4wvTqFsw - GL-E71/A: # of individuals receiving NFI kits (AE) - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) Male, Refugee ]" /></td>
+				<td><input id="MIb4wvTqFsw-fgK1KOTsYTX-val" title="MIb4wvTqFsw - GL-E71/A: # of individuals receiving NFI kits (AE) - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) Female, Refugee ]" /></td>
+				<td><input id="MIb4wvTqFsw-LtjBY2tHrCQ-val" title="MIb4wvTqFsw - GL-E71/A: # of individuals receiving NFI kits (AE) - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) Male, Host Community ]" /></td>
+				<td><input id="MIb4wvTqFsw-n4G7V7Ij9M8-val" title="MIb4wvTqFsw - GL-E71/A: # of individuals receiving NFI kits (AE) - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) Female, Host Community ]" /></td>
+				<td><input id="MIb4wvTqFsw-mDkp8daNEq9-val" title="MIb4wvTqFsw - GL-E71/A: # of individuals receiving NFI kits (AE) - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) Male, Other ]" /></td>
+				<td><input id="MIb4wvTqFsw-DUVdAs0fh3D-val" title="MIb4wvTqFsw - GL-E71/A: # of individuals receiving NFI kits (AE) - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="MIb4wvTqFsw" id="totalMIb4wvTqFsw" name="total" readonly="readonly" title="GL-E71/A: # of individuals receiving NFI kits (AE)" value="[ GL-E71/A: # of individuals receiving NFI kits (AE) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of individuals receiving NFI Kits EiE (GL-E71)</td>
+				<td><input id="Yf2iiG6GSxM-Jsj0zseyZRy-val" title="Yf2iiG6GSxM - GL-E71/E: # of individuals receiving NFI kits (EiE) - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) Male, IDP ]" /></td>
+				<td><input id="Yf2iiG6GSxM-TSItPcR5Co0-val" title="Yf2iiG6GSxM - GL-E71/E: # of individuals receiving NFI kits (EiE) - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) Female, IDP ]" /></td>
+				<td><input id="Yf2iiG6GSxM-LrwymE2so9E-val" title="Yf2iiG6GSxM - GL-E71/E: # of individuals receiving NFI kits (EiE) - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) Male, Refugee ]" /></td>
+				<td><input id="Yf2iiG6GSxM-fgK1KOTsYTX-val" title="Yf2iiG6GSxM - GL-E71/E: # of individuals receiving NFI kits (EiE) - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) Female, Refugee ]" /></td>
+				<td><input id="Yf2iiG6GSxM-LtjBY2tHrCQ-val" title="Yf2iiG6GSxM - GL-E71/E: # of individuals receiving NFI kits (EiE) - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) Male, Host Community ]" /></td>
+				<td><input id="Yf2iiG6GSxM-n4G7V7Ij9M8-val" title="Yf2iiG6GSxM - GL-E71/E: # of individuals receiving NFI kits (EiE) - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) Female, Host Community ]" /></td>
+				<td><input id="Yf2iiG6GSxM-mDkp8daNEq9-val" title="Yf2iiG6GSxM - GL-E71/E: # of individuals receiving NFI kits (EiE) - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) Male, Other ]" /></td>
+				<td><input id="Yf2iiG6GSxM-DUVdAs0fh3D-val" title="Yf2iiG6GSxM - GL-E71/E: # of individuals receiving NFI kits (EiE) - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="Yf2iiG6GSxM" id="totalYf2iiG6GSxM" name="total" readonly="readonly" title="GL-E71/E: # of individuals receiving NFI kits (EiE)" value="[ GL-E71/E: # of individuals receiving NFI kits (EiE) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of individuals receiving NFI Kits Other (GL-E71)</td>
+				<td><input id="t6SG5mmDVXL-Jsj0zseyZRy-val" title="t6SG5mmDVXL - GL-E71: # of individuals receiving NFI kits (Education) - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E71: # of individuals receiving NFI kits (Education) Male, IDP ]" /></td>
+				<td><input id="t6SG5mmDVXL-TSItPcR5Co0-val" title="t6SG5mmDVXL - GL-E71: # of individuals receiving NFI kits (Education) - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E71: # of individuals receiving NFI kits (Education) Female, IDP ]" /></td>
+				<td><input id="t6SG5mmDVXL-LrwymE2so9E-val" title="t6SG5mmDVXL - GL-E71: # of individuals receiving NFI kits (Education) - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E71: # of individuals receiving NFI kits (Education) Male, Refugee ]" /></td>
+				<td><input id="t6SG5mmDVXL-fgK1KOTsYTX-val" title="t6SG5mmDVXL - GL-E71: # of individuals receiving NFI kits (Education) - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E71: # of individuals receiving NFI kits (Education) Female, Refugee ]" /></td>
+				<td><input id="t6SG5mmDVXL-LtjBY2tHrCQ-val" title="t6SG5mmDVXL - GL-E71: # of individuals receiving NFI kits (Education) - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E71: # of individuals receiving NFI kits (Education) Male, Host Community ]" /></td>
+				<td><input id="t6SG5mmDVXL-n4G7V7Ij9M8-val" title="t6SG5mmDVXL - GL-E71: # of individuals receiving NFI kits (Education) - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E71: # of individuals receiving NFI kits (Education) Female, Host Community ]" /></td>
+				<td><input id="t6SG5mmDVXL-mDkp8daNEq9-val" title="t6SG5mmDVXL - GL-E71: # of individuals receiving NFI kits (Education) - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E71: # of individuals receiving NFI kits (Education) Male, Other ]" /></td>
+				<td><input id="t6SG5mmDVXL-DUVdAs0fh3D-val" title="t6SG5mmDVXL - GL-E71: # of individuals receiving NFI kits (Education) - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E71: # of individuals receiving NFI kits (Education) Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="t6SG5mmDVXL" id="totalt6SG5mmDVXL" name="total" readonly="readonly" title="GL-E71: # of individuals receiving NFI kits (Education)" value="[ GL-E71: # of individuals receiving NFI kits (Education) ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Education NFI</th>
+				<th class="nrcdataheader">Teacher</th>
+				<th class="nrcdataheader">Student</th>
+				<th class="nrcdataheader">Other</th>
+				<th class="nrctotalheader">Services</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of kits distributed YEP (GL-E70) &nbsp;</td>
+				<td><input id="dg0I38H12FM-kJRRp2DnOyH-val" title="dg0I38H12FM - GL-E70/Y: # of NFI kits distributed (YEP) - kJRRp2DnOyH - Teacher Kits - INTEGER" value="[ GL-E70/Y: # of NFI kits distributed (YEP) Teacher Kits ]" /></td>
+				<td><input id="dg0I38H12FM-M4okt6DErQ0-val" title="dg0I38H12FM - GL-E70/Y: # of NFI kits distributed (YEP) - M4okt6DErQ0 - Student Kits - INTEGER" value="[ GL-E70/Y: # of NFI kits distributed (YEP) Student Kits ]" /></td>
+				<td><input id="dg0I38H12FM-LIvpabLAYEH-val" title="dg0I38H12FM - GL-E70/Y: # of NFI kits distributed (YEP) - LIvpabLAYEH - Other - INTEGER" value="[ GL-E70/Y: # of NFI kits distributed (YEP) Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="dg0I38H12FM" id="totaldg0I38H12FM" name="total" readonly="readonly" title="GL-E70/Y: # of NFI kits distributed (YEP)" value="[ GL-E70/Y: # of NFI kits distributed (YEP) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of kits distributed AE(GL-E70)</td>
+				<td><input id="yQbg9gcfN4b-kJRRp2DnOyH-val" title="yQbg9gcfN4b - GL-E70/A: # of NFI kits distributed (AE) - kJRRp2DnOyH - Teacher Kits - INTEGER" value="[ GL-E70/A: # of NFI kits distributed (AE) Teacher Kits ]" /></td>
+				<td><input id="yQbg9gcfN4b-M4okt6DErQ0-val" title="yQbg9gcfN4b - GL-E70/A: # of NFI kits distributed (AE) - M4okt6DErQ0 - Student Kits - INTEGER" value="[ GL-E70/A: # of NFI kits distributed (AE) Student Kits ]" /></td>
+				<td><input id="yQbg9gcfN4b-LIvpabLAYEH-val" title="yQbg9gcfN4b - GL-E70/A: # of NFI kits distributed (AE) - LIvpabLAYEH - Other - INTEGER" value="[ GL-E70/A: # of NFI kits distributed (AE) Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="yQbg9gcfN4b" id="totalyQbg9gcfN4b" name="total" readonly="readonly" title="GL-E70/A: # of NFI kits distributed (AE)" value="[ GL-E70/A: # of NFI kits distributed (AE) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of kits distributed EiE (GL-E70)</td>
+				<td><input id="o1w0U7kJgx0-kJRRp2DnOyH-val" title="o1w0U7kJgx0 - GL-E70/E: # of NFI kits distributed (EiE) - kJRRp2DnOyH - Teacher Kits - INTEGER" value="[ GL-E70/E: # of NFI kits distributed (EiE) Teacher Kits ]" /></td>
+				<td><input id="o1w0U7kJgx0-M4okt6DErQ0-val" title="o1w0U7kJgx0 - GL-E70/E: # of NFI kits distributed (EiE) - M4okt6DErQ0 - Student Kits - INTEGER" value="[ GL-E70/E: # of NFI kits distributed (EiE) Student Kits ]" /></td>
+				<td><input id="o1w0U7kJgx0-LIvpabLAYEH-val" title="o1w0U7kJgx0 - GL-E70/E: # of NFI kits distributed (EiE) - LIvpabLAYEH - Other - INTEGER" value="[ GL-E70/E: # of NFI kits distributed (EiE) Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="o1w0U7kJgx0" id="totalo1w0U7kJgx0" name="total" readonly="readonly" title="GL-E70/E: # of NFI kits distributed (EiE)" value="[ GL-E70/E: # of NFI kits distributed (EiE) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of kits distributed Other (GL-E70)</td>
+				<td><input id="GZZJBpuIaZX-kJRRp2DnOyH-val" title="GZZJBpuIaZX - GL-E70: # of NFI kits distributed (Education) - kJRRp2DnOyH - Teacher Kits - INTEGER" value="[ GL-E70: # of NFI kits distributed (Education) Teacher Kits ]" /></td>
+				<td><input id="GZZJBpuIaZX-M4okt6DErQ0-val" title="GZZJBpuIaZX - GL-E70: # of NFI kits distributed (Education) - M4okt6DErQ0 - Student Kits - INTEGER" value="[ GL-E70: # of NFI kits distributed (Education) Student Kits ]" /></td>
+				<td><input id="GZZJBpuIaZX-LIvpabLAYEH-val" title="GZZJBpuIaZX - GL-E70: # of NFI kits distributed (Education) - LIvpabLAYEH - Other - INTEGER" value="[ GL-E70: # of NFI kits distributed (Education) Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="GZZJBpuIaZX" id="totalGZZJBpuIaZX" name="total" readonly="readonly" title="GL-E70: # of NFI kits distributed (Education)" value="[ GL-E70: # of NFI kits distributed (Education) ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Education NFI</th>
+				<th class="nrcdataheader">School</th>
+				<th class="nrcdataheader">Government</th>
+				<th class="nrcdataheader">Other</th>
+				<th class="nrctotalheader">Services</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of institutions receiving NFI kits(GL-E73)</td>
+				<td><input id="mUBFkld2120-mBNYtOLtDTu-val" title="mUBFkld2120 - GL-E73: # of institutions receiving NFI kits (Education) - mBNYtOLtDTu - School - INTEGER" value="[ GL-E73: # of institutions receiving NFI kits (Education) School ]" /></td>
+				<td><input id="mUBFkld2120-oHTJ1ZjrN7M-val" title="mUBFkld2120 - GL-E73: # of institutions receiving NFI kits (Education) - oHTJ1ZjrN7M - Government - INTEGER" value="[ GL-E73: # of institutions receiving NFI kits (Education) Government ]" /></td>
+				<td><input id="mUBFkld2120-KZI3ERoFd07-val" title="mUBFkld2120 - GL-E73: # of institutions receiving NFI kits (Education) - KZI3ERoFd07 - Other - INTEGER" value="[ GL-E73: # of institutions receiving NFI kits (Education) Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="mUBFkld2120" id="totalmUBFkld2120" name="total" readonly="readonly" title="GL-E73: # of institutions receiving NFI kits (Education)" value="[ GL-E73: # of institutions receiving NFI kits (Education) ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+	</div>
+	</li>
+	<!-- ***********************************************************End Section******************************************************************** --><!-- ***********************************************************Section Start******************************************************************** -->
+	<li class="panel panel-default" id="EDUCATIONCash">
+	<div class="panel-heading" data-target="#education-cash" data-toggle="collapse">
+	<h5 class="panel-title accordion-toggle"><a class="nrc-panel-title">Cash and Vouchers (Education)</a></h5>
+	</div>
+
+	<div class="panel-collapse collapse in" id="education-cash">
+	<div class="panel-body"><!-- ***********************************************************Tables go here************ -->
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Individuals receiving cash</th>
+				<th class="nrcdataheader" colspan="2">IDPs</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Refugees</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Host Community</th>
+				<th class="nrcdataheader" colspan="2" scope="col">Other</th>
+				<th class="nrctotalheader" colspan="1" scope="col">Total</th>
+			</tr>
+			<tr>
+				<th class="nrcinfoheader">&nbsp;</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrcdataheader">Males</th>
+				<th class="nrcdataheader">Females</th>
+				<th class="nrctotalheader">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of individuals recieving conditional cash (GL-E90)&nbsp;</td>
+				<td><input id="iCdbDzh54gJ-Jsj0zseyZRy-val" title="iCdbDzh54gJ - GL-E90/C: # of individuals receiving conditional cash - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E90/C: # of individuals receiving conditional cash Male, IDP ]" /></td>
+				<td><input id="iCdbDzh54gJ-TSItPcR5Co0-val" title="iCdbDzh54gJ - GL-E90/C: # of individuals receiving conditional cash - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E90/C: # of individuals receiving conditional cash Female, IDP ]" /></td>
+				<td><input id="iCdbDzh54gJ-LrwymE2so9E-val" title="iCdbDzh54gJ - GL-E90/C: # of individuals receiving conditional cash - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E90/C: # of individuals receiving conditional cash Male, Refugee ]" /></td>
+				<td><input id="iCdbDzh54gJ-fgK1KOTsYTX-val" title="iCdbDzh54gJ - GL-E90/C: # of individuals receiving conditional cash - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E90/C: # of individuals receiving conditional cash Female, Refugee ]" /></td>
+				<td><input id="iCdbDzh54gJ-LtjBY2tHrCQ-val" title="iCdbDzh54gJ - GL-E90/C: # of individuals receiving conditional cash - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E90/C: # of individuals receiving conditional cash Male, Host Community ]" /></td>
+				<td><input id="iCdbDzh54gJ-n4G7V7Ij9M8-val" title="iCdbDzh54gJ - GL-E90/C: # of individuals receiving conditional cash - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E90/C: # of individuals receiving conditional cash Female, Host Community ]" /></td>
+				<td><input id="iCdbDzh54gJ-mDkp8daNEq9-val" title="iCdbDzh54gJ - GL-E90/C: # of individuals receiving conditional cash - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E90/C: # of individuals receiving conditional cash Male, Other ]" /></td>
+				<td><input id="iCdbDzh54gJ-DUVdAs0fh3D-val" title="iCdbDzh54gJ - GL-E90/C: # of individuals receiving conditional cash - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E90/C: # of individuals receiving conditional cash Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="iCdbDzh54gJ" id="totaliCdbDzh54gJ" name="total" readonly="readonly" title="GL-E90/C: # of individuals receiving conditional cash" value="[ GL-E90/C: # of individuals receiving conditional cash ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of individuals receiving unconditional cash (GL-E91)</td>
+				<td><input id="fRfTzBRopp3-Jsj0zseyZRy-val" title="fRfTzBRopp3 - GL-E91/C: # of individuals receiving unconditional cash - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E91/C: # of individuals receiving unconditional cash Male, IDP ]" /></td>
+				<td><input id="fRfTzBRopp3-TSItPcR5Co0-val" title="fRfTzBRopp3 - GL-E91/C: # of individuals receiving unconditional cash - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E91/C: # of individuals receiving unconditional cash Female, IDP ]" /></td>
+				<td><input id="fRfTzBRopp3-LrwymE2so9E-val" title="fRfTzBRopp3 - GL-E91/C: # of individuals receiving unconditional cash - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E91/C: # of individuals receiving unconditional cash Male, Refugee ]" /></td>
+				<td><input id="fRfTzBRopp3-fgK1KOTsYTX-val" title="fRfTzBRopp3 - GL-E91/C: # of individuals receiving unconditional cash - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E91/C: # of individuals receiving unconditional cash Female, Refugee ]" /></td>
+				<td><input id="fRfTzBRopp3-LtjBY2tHrCQ-val" title="fRfTzBRopp3 - GL-E91/C: # of individuals receiving unconditional cash - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E91/C: # of individuals receiving unconditional cash Male, Host Community ]" /></td>
+				<td><input id="fRfTzBRopp3-n4G7V7Ij9M8-val" title="fRfTzBRopp3 - GL-E91/C: # of individuals receiving unconditional cash - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E91/C: # of individuals receiving unconditional cash Female, Host Community ]" /></td>
+				<td><input id="fRfTzBRopp3-mDkp8daNEq9-val" title="fRfTzBRopp3 - GL-E91/C: # of individuals receiving unconditional cash - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E91/C: # of individuals receiving unconditional cash Male, Other ]" /></td>
+				<td><input id="fRfTzBRopp3-DUVdAs0fh3D-val" title="fRfTzBRopp3 - GL-E91/C: # of individuals receiving unconditional cash - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E91/C: # of individuals receiving unconditional cash Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="fRfTzBRopp3" id="totalfRfTzBRopp3" name="total" readonly="readonly" title="GL-E91/C: # of individuals receiving unconditional cash" value="[ GL-E91/C: # of individuals receiving unconditional cash ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of individuals recieving vouchers (GL-E94)</td>
+				<td><input id="nEVSBenTQle-Jsj0zseyZRy-val" title="nEVSBenTQle - GL-E94/C: # of indviduals receiving vouchers - Jsj0zseyZRy - Male, IDP - INTEGER" value="[ GL-E94/C: # of indviduals receiving vouchers Male, IDP ]" /></td>
+				<td><input id="nEVSBenTQle-TSItPcR5Co0-val" title="nEVSBenTQle - GL-E94/C: # of indviduals receiving vouchers - TSItPcR5Co0 - Female, IDP - INTEGER" value="[ GL-E94/C: # of indviduals receiving vouchers Female, IDP ]" /></td>
+				<td><input id="nEVSBenTQle-LrwymE2so9E-val" title="nEVSBenTQle - GL-E94/C: # of indviduals receiving vouchers - LrwymE2so9E - Male, Refugee - INTEGER" value="[ GL-E94/C: # of indviduals receiving vouchers Male, Refugee ]" /></td>
+				<td><input id="nEVSBenTQle-fgK1KOTsYTX-val" title="nEVSBenTQle - GL-E94/C: # of indviduals receiving vouchers - fgK1KOTsYTX - Female, Refugee - INTEGER" value="[ GL-E94/C: # of indviduals receiving vouchers Female, Refugee ]" /></td>
+				<td><input id="nEVSBenTQle-LtjBY2tHrCQ-val" title="nEVSBenTQle - GL-E94/C: # of indviduals receiving vouchers - LtjBY2tHrCQ - Male, Host Community - INTEGER" value="[ GL-E94/C: # of indviduals receiving vouchers Male, Host Community ]" /></td>
+				<td><input id="nEVSBenTQle-n4G7V7Ij9M8-val" title="nEVSBenTQle - GL-E94/C: # of indviduals receiving vouchers - n4G7V7Ij9M8 - Female, Host Community - INTEGER" value="[ GL-E94/C: # of indviduals receiving vouchers Female, Host Community ]" /></td>
+				<td><input id="nEVSBenTQle-mDkp8daNEq9-val" title="nEVSBenTQle - GL-E94/C: # of indviduals receiving vouchers - mDkp8daNEq9 - Male, Other - INTEGER" value="[ GL-E94/C: # of indviduals receiving vouchers Male, Other ]" /></td>
+				<td><input id="nEVSBenTQle-DUVdAs0fh3D-val" title="nEVSBenTQle - GL-E94/C: # of indviduals receiving vouchers - DUVdAs0fh3D - Female, Other - INTEGER" value="[ GL-E94/C: # of indviduals receiving vouchers Female, Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="nEVSBenTQle" id="totalnEVSBenTQle" name="total" readonly="readonly" title="GL-E94/C: # of indviduals receiving vouchers" value="[ GL-E94/C: # of indviduals receiving vouchers ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Institutions recieving cash&nbsp;</th>
+				<th class="nrcdataheader">School</th>
+				<th class="nrcdataheader">Government</th>
+				<th class="nrcdataheader">Other</th>
+				<th class="nrctotalheader">Total</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName"># of institutions receiving conditional cash (GL-E98)</td>
+				<td><input id="VaUILCV0Ldi-mBNYtOLtDTu-val" title="VaUILCV0Ldi - GL-E98/C: # of institutions receiving conditional cash - mBNYtOLtDTu - School - INTEGER" value="[ GL-E98/C: # of institutions receiving conditional cash School ]" /></td>
+				<td><input id="VaUILCV0Ldi-oHTJ1ZjrN7M-val" title="VaUILCV0Ldi - GL-E98/C: # of institutions receiving conditional cash - oHTJ1ZjrN7M - Government - INTEGER" value="[ GL-E98/C: # of institutions receiving conditional cash Government ]" /></td>
+				<td><input id="VaUILCV0Ldi-KZI3ERoFd07-val" title="VaUILCV0Ldi - GL-E98/C: # of institutions receiving conditional cash - KZI3ERoFd07 - Other - INTEGER" value="[ GL-E98/C: # of institutions receiving conditional cash Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="VaUILCV0Ldi" id="totalVaUILCV0Ldi" name="total" readonly="readonly" title="GL-E98/C: # of institutions receiving conditional cash" value="[ GL-E98/C: # of institutions receiving conditional cash ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of institutions receiving conditional cash (GL-E99)</td>
+				<td><input id="pI0Q6ijziNG-mBNYtOLtDTu-val" title="pI0Q6ijziNG - GL-E99/C: # of institutions receiving unconditional cash - mBNYtOLtDTu - School - INTEGER" value="[ GL-E99/C: # of institutions receiving unconditional cash School ]" /></td>
+				<td><input id="pI0Q6ijziNG-oHTJ1ZjrN7M-val" title="pI0Q6ijziNG - GL-E99/C: # of institutions receiving unconditional cash - oHTJ1ZjrN7M - Government - INTEGER" value="[ GL-E99/C: # of institutions receiving unconditional cash Government ]" /></td>
+				<td><input id="pI0Q6ijziNG-KZI3ERoFd07-val" title="pI0Q6ijziNG - GL-E99/C: # of institutions receiving unconditional cash - KZI3ERoFd07 - Other - INTEGER" value="[ GL-E99/C: # of institutions receiving unconditional cash Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="pI0Q6ijziNG" id="totalpI0Q6ijziNG" name="total" readonly="readonly" title="GL-E99/C: # of institutions receiving unconditional cash" value="[ GL-E99/C: # of institutions receiving unconditional cash ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName"># of institutions receiving vouchers (GL-E100)</td>
+				<td><input id="JAMCzUMZq83-mBNYtOLtDTu-val" title="JAMCzUMZq83 - GL-E100/C: # of instiutions receiving vouchers - mBNYtOLtDTu - School - INTEGER" value="[ GL-E100/C: # of instiutions receiving vouchers School ]" /></td>
+				<td><input id="JAMCzUMZq83-oHTJ1ZjrN7M-val" title="JAMCzUMZq83 - GL-E100/C: # of instiutions receiving vouchers - oHTJ1ZjrN7M - Government - INTEGER" value="[ GL-E100/C: # of instiutions receiving vouchers Government ]" /></td>
+				<td><input id="JAMCzUMZq83-KZI3ERoFd07-val" title="JAMCzUMZq83 - GL-E100/C: # of instiutions receiving vouchers - KZI3ERoFd07 - Other - INTEGER" value="[ GL-E100/C: # of instiutions receiving vouchers Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="JAMCzUMZq83" id="totalJAMCzUMZq83" name="total" readonly="readonly" title="GL-E100/C: # of instiutions receiving vouchers" value="[ GL-E100/C: # of instiutions receiving vouchers ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="nrcsubsection">&nbsp;</div>
+	<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+	<table>
+		<thead>
+			<tr>
+				<th class="nrcinfoheader">Cash Response Type&nbsp;</th>
+				<th class="nrcdataheader">YEP</th>
+				<th class="nrcdataheader">AE</th>
+				<th class="nrcdataheader">EiE</th>
+				<th class="nrcdataheader">Sys Support</th>
+				<th class="nrcdataheader">Standalone</th>
+				<th class="nrcdataheader">Other</th>
+				<th class="nrctotalheader">Total</th>
+			</tr>
+		</thead>
+		<tbody class="searchable">
+			<tr>
+				<td class="nrcindicatorName">Value of cash distributed in USD (GL-E96)&nbsp;</td>
+				<td><input id="Kr0nWCz0bIz-ZRoMJ4FB3ZN-val" title="Kr0nWCz0bIz - GL-E96/C: Value of cash distributed (in US dollars) - ZRoMJ4FB3ZN - YEP - INTEGER" value="[ GL-E96/C: Value of cash distributed (in US dollars) YEP ]" /></td>
+				<td><input id="Kr0nWCz0bIz-Cvw7P41DDYh-val" title="Kr0nWCz0bIz - GL-E96/C: Value of cash distributed (in US dollars) - Cvw7P41DDYh - AE - INTEGER" value="[ GL-E96/C: Value of cash distributed (in US dollars) AE ]" /></td>
+				<td><input id="Kr0nWCz0bIz-aNOACWTLXdX-val" title="Kr0nWCz0bIz - GL-E96/C: Value of cash distributed (in US dollars) - aNOACWTLXdX - EiE - INTEGER" value="[ GL-E96/C: Value of cash distributed (in US dollars) EiE ]" /></td>
+				<td><input id="Kr0nWCz0bIz-PlJ8OReg60J-val" title="Kr0nWCz0bIz - GL-E96/C: Value of cash distributed (in US dollars) - PlJ8OReg60J - System Support - INTEGER" value="[ GL-E96/C: Value of cash distributed (in US dollars) System Support ]" /></td>
+				<td><input id="Kr0nWCz0bIz-G6HD9KhLgm8-val" title="Kr0nWCz0bIz - GL-E96/C: Value of cash distributed (in US dollars) - G6HD9KhLgm8 - Standalone - INTEGER" value="[ GL-E96/C: Value of cash distributed (in US dollars) Standalone ]" /></td>
+				<td><input id="Kr0nWCz0bIz-PMuJkPJClka-val" title="Kr0nWCz0bIz - GL-E96/C: Value of cash distributed (in US dollars) - PMuJkPJClka - Other - INTEGER" value="[ GL-E96/C: Value of cash distributed (in US dollars) Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="Kr0nWCz0bIz" id="totalKr0nWCz0bIz" name="total" readonly="readonly" title="GL-E96/C: Value of cash distributed (in US dollars)" value="[ GL-E96/C: Value of cash distributed (in US dollars) ]" /></td>
+			</tr>
+			<tr>
+				<td class="nrcindicatorName">Value of vouchers distributed in USD (GL-E97)&nbsp;</td>
+				<td><input id="vRmtycrvrcm-ZRoMJ4FB3ZN-val" title="vRmtycrvrcm - GL-E97/C: Value of vouchers distributed (in US dollars) - ZRoMJ4FB3ZN - YEP - INTEGER" value="[ GL-E97/C: Value of vouchers distributed (in US dollars) YEP ]" /></td>
+				<td><input id="vRmtycrvrcm-Cvw7P41DDYh-val" title="vRmtycrvrcm - GL-E97/C: Value of vouchers distributed (in US dollars) - Cvw7P41DDYh - AE - INTEGER" value="[ GL-E97/C: Value of vouchers distributed (in US dollars) AE ]" /></td>
+				<td><input id="vRmtycrvrcm-aNOACWTLXdX-val" title="vRmtycrvrcm - GL-E97/C: Value of vouchers distributed (in US dollars) - aNOACWTLXdX - EiE - INTEGER" value="[ GL-E97/C: Value of vouchers distributed (in US dollars) EiE ]" /></td>
+				<td><input id="vRmtycrvrcm-PlJ8OReg60J-val" title="vRmtycrvrcm - GL-E97/C: Value of vouchers distributed (in US dollars) - PlJ8OReg60J - System Support - INTEGER" value="[ GL-E97/C: Value of vouchers distributed (in US dollars) System Support ]" /></td>
+				<td><input id="vRmtycrvrcm-G6HD9KhLgm8-val" title="vRmtycrvrcm - GL-E97/C: Value of vouchers distributed (in US dollars) - G6HD9KhLgm8 - Standalone - INTEGER" value="[ GL-E97/C: Value of vouchers distributed (in US dollars) Standalone ]" /></td>
+				<td><input id="vRmtycrvrcm-PMuJkPJClka-val" title="vRmtycrvrcm - GL-E97/C: Value of vouchers distributed (in US dollars) - PMuJkPJClka - Other - INTEGER" value="[ GL-E97/C: Value of vouchers distributed (in US dollars) Other ]" /></td>
+				<td class="lastinrow"><input dataelementid="vRmtycrvrcm" id="totalvRmtycrvrcm" name="total" readonly="readonly" title="GL-E97/C: Value of vouchers distributed (in US dollars)" value="[ GL-E97/C: Value of vouchers distributed (in US dollars) ]" /></td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+	</div>
+	</li>
+	<!-- ***********************************************************End Section******************************************************************** -->
+</ul>
