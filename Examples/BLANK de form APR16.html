@@ -1,0 +1,233 @@
+<meta charset="utf-8" />
+<title></title>
+<!-- NRC clours dark grey #3c3c3c; light blue #eaf7fb;  -->
+
+<!-- ********************************************************* CSS and INCLUDES - THESE DEFINE THE LAYOUT OF THE FORM ******************************************************************** -->
+<link href="../dhis-web-commons/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="../dhis-web-commons/font-awesome/css/font-awesome.min.css?_rev=21841" rel="stylesheet" type="text/css" />
+<link href="../favicon.ico" rel="shortcut icon" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.css" /><script type="text/javascript" src="../dhis-web-commons/bootstrap/js/bootstrap.min.js">
+</script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js">
+</script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+
+<style type="text/css">
+
+.nrcsubsection /* spacer inbetween tables */
+{  
+    background-color: #fff;  /* white */
+    height: 5px;
+}
+
+input.entryfield {
+width:  70px;
+height: 18px;
+padding: 2px;
+}
+input.dataelementtotal 
+{
+width:  70px;
+height: 18px;
+padding: 2px;   
+}
+input.indicator
+{
+width:  70px;
+height: 18px;
+padding: 2px;   
+}
+tr:hover {background-color: #e5e5e5}
+
+td {
+padding: 2px;
+height: 16px;
+text-align: center;
+}
+
+td.lastinrow {
+background-color: #eee;
+text-align: center;
+}
+th.nrcinfoheader {
+text-align: left;
+border-bottom-style: hidden;
+border-left-style: hidden;
+border-top-style: hidden;
+width: 100%;
+white-space: nowrap;
+background-color: #fff;
+
+}
+
+td.nrcindicatorName {
+text-align: left;
+}
+
+th.nrcdataheader{
+text-align: center;
+border-bottom: 1px solid #ddd;
+background-color: #eaf7fb;
+white-space: nowrap;
+padding-left: 10px;
+padding-right: 10px;
+}
+th.nrctotalheader {
+text-align: center;
+border-bottom: 1px solid #ddd;
+background-color: #eee;
+white-space: nowrap;
+padding-left: 10px;
+padding-right: 10px;
+}
+.panel {
+margin-bottom: 7px;
+}
+
+.panel-body {
+padding-top: 0;
+padding-left: 8px;
+padding-right: 8px;
+padding-bottom: 4px;
+}
+
+.panel-default > .panel-heading {
+    background-color: #3c3c3c; 
+    border-color: #3c3c3c;
+    padding: 7px;
+    margin-bottom: 5px;
+    cursor: move;
+}
+a.nrc-panel-title {
+
+color: white;
+    cursor: pointer;
+}
+
+/* CSS Method for adding Font Awesome Chevron Icons */
+
+.accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family:'FontAwesome';
+    content:"\f077";
+    float: right;
+    color: white !important;
+}
+.panel-heading.collapsed .accordion-toggle:after {
+    /* symbol for "collapsed" panels */
+    content:"\f078";
+}
+</style>
+
+<!-- ***********************************************************JS Functions******************************************************************** --><script>
+
+$(document).ready(function(){
+  
+    //could change this to a bootstrap popover potentially and have the data in a hidden field  - these would be specific notes on completion
+	// could have a button to put in the notes??
+	// could also potentially have checkboxes in each row and a button to hide these (or the sections drop down to have subsections)
+	
+	 var panelList = $('#accordion');
+     var options = [];	
+	 
+    $('[data-toggle="tooltip"]').tooltip(); 
+    $(".panel-heading").addClass("collapsed");
+
+		 //HANDLER FOR SEARCH FIELD
+         $('#filter').keyup(function () {
+
+            var rex = new RegExp($(this).val(), 'i');
+            $('.searchable tr').hide();
+            $('.searchable tr').filter(function () {
+                return rex.test($(this).text());
+            }).show();
+        });
+
+        panelList.sortable({
+            // Only make the .panel-heading child elements support dragging.
+            // Omit this to make then entire <li>...</li> draggable.
+            //handle: '.panel-heading', 
+            update: function() {
+                $('.panel', panelList).each(function(index, elem) {
+                     var $listItem = $(elem),
+                         newIndex = $listItem.index();
+
+                     // Persist the new indices.
+                });
+            }
+        });
+
+        $('.dropdown-menu a').on('click', function (event) {
+
+            var $target = $(event.currentTarget),
+              val = $target.attr('data-value'),
+              $inp = $target.find('input'),
+              idx;
+
+            if ((idx = options.indexOf(val)) > -1) {
+                options.splice(idx, 1);
+                setTimeout(function () { $inp.prop('checked', false) }, 0);
+            } else {
+                options.push(val);
+                setTimeout(function () { $inp.prop('checked', true) }, 0);
+            }
+
+            $(event.target).blur();
+            console.log(options);
+            showOptions(options);
+            //     $('#mylist').hide();
+            return false;
+
+        });
+
+            function showOptions(options) {
+            // $('#mylist li').hide();
+            //console.log("in my function")
+            //console.log(options.length);
+
+            $("#accordion li").each(function () {
+                var liText = $(this).attr('id');
+                $(this).hide();
+                //console.log("liText is " + liText)
+                for (counter = 0; counter < options.length; counter++) {
+                    //console.log(options[counter]);
+                    if (liText == options[counter]) {
+                        $(this).show();
+                        console.log("found");
+                    }
+                }
+            });
+        };
+    });
+
+
+</script>
+<!-- *********************************************************END OF CSS, INCLUDES and SCRIPTS******************************************************************** -->
+<div class="commenetSpacer hidden">&nbsp;</div>
+<!-- *********************************************************Title******************************************************************** -->
+<div class="commenetSpacer hidden">&nbsp;</div>
+<div class="input-group col-xs-6">
+<div class="input-group"><span class="input-group-addon">Filter</span> <input class="form-control" id="filter" type="text" />
+<div class="input-group-btn"><button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">show/hide sections</button>
+<ul class="dropdown-menu pull-right">
+	<li><a class="small" data-value="panel1" href="#" tabindex="-1"><input type="checkbox" /> panel1</a></li>
+	<li><a class="small" data-value="panel2" href="#" tabindex="-1"><input type="checkbox" /> panel2</a></li>
+	<li><a class="small" data-value="panel3" href="#" tabindex="-1"><input type="checkbox" /> panel3</a></li>
+</ul>
+<!-- /btn-group --></div>
+<!-- /input-group --></div>
+<!-- /.col-lg-6 --></div>
+
+<h1 style="text-align: right;"><strong><span style="font-family:trebuchet ms,helvetica,sans-serif;">TITLE OF THE REPORT</span></strong>&nbsp;</h1>
+
+<!-- *********************************************************END OF Title******************************************************************** -->
+<div class="commenetSpacer hidden">&nbsp;</div>
+<ul class="list-unstyled" id="accordion"> <!-- ***********************************************************LIST OF COLLAPSABLE PANELS GOES HERE.******************************************************************** -->
+<div class="commenetSpacer hidden">&nbsp;</div>
+
+
+
+	
+	
+	
+	
+	
+</ul>
