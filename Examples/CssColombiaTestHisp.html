@@ -1,0 +1,291 @@
+<!-- NRC clours dark grey #3c3c3c; light blue #eaf7fb;  --><!-- ********************************************************* CSS and INCLUDES - THESE DEFINE THE LAYOUT OF THE FORM ******************************************************************** -->
+<meta charset="utf-8"/>
+<link href="../dhis-web-commons/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="../dhis-web-commons/bootstrap/css/glyphicons-halflings-regular.woff rel=" stylesheet" type="text/css" />
+<link href="../dhis-web-commons/font-awesome/css/font-awesome.min.css?_rev=21841" rel="stylesheet" type="text/css"/>
+<link href="../favicon.ico" rel="shortcut icon"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.css"/>
+<script type="text/javascript" src="../dhis-web-commons/bootstrap/js/bootstrap.min.js">
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js">
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+<style type="text/css">.nrcsubsection /* spacer inbetween tables */
+ {
+    background-color: #fff; /* white */
+    height: 5px;
+}
+
+input.entryfield {
+    width: 70px;
+    height: 18px;
+    padding: 2px;
+}
+
+input.dataelementtotal {
+    width: 70px;
+    height: 18px;
+    padding: 2px;
+}
+
+input.indicator {
+    width: 70px;
+    height: 18px;
+    padding: 2px;
+}
+
+tr:hover {
+    background-color: #e5e5e5
+}
+
+td {
+    padding: 2px;
+    height: 16px;
+    text-align: center;
+}
+
+td.nrcindicatorName {
+    text-align: left;
+}
+
+td.lastinrow {
+    background-color: #eee;
+    text-align: center;
+}
+
+th.nrcinfoheader {
+    text-align: left;
+    border-bottom: none;
+    width: 100%;
+}
+
+th.nrcdataheader {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    background-color: #eaf7fb;
+    white-space: nowrap;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+th.nrctotalheader {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    background-color: #eee;
+    white-space: nowrap;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.panel {
+    margin-bottom: 7px;
+}
+
+.panel-body {
+    padding-top: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 4px;
+}
+
+.panel-default > .panel-heading {
+    background-color: #3c3c3c;
+    border-color: #3c3c3c;
+    padding: 7px;
+    margin-bottom: 5px;
+    cursor: move;
+}
+
+a.nrc-panel-title {
+
+    color: white;
+    cursor: pointer;
+}
+
+/* CSS Method for adding Font Awesome Chevron Icons */
+
+.accordion-toggle:after {
+    /* symbol for "opening" panels */
+    font-family: 'FontAwesome';
+    content: "\f077";
+    float: right;
+    color: white !important;
+}
+
+.panel-heading.collapsed .accordion-toggle:after {
+    /* symbol for "collapsed" panels */
+    content: "\f078";
+}
+</style>
+
+$(document).ready(function(){
+$("#checkedAll").on('click',function(){
+console.log("aqui estoy A");
+if(this.checked){
+console.log("aqui estoy");
+$(".checkSingle").each(function(){
+console.log("aqui estoy");
+this.checked=true;
+})
+}else{
+console.log("aqui estoy b");
+$(".checkSingle").each(function(){
+this.checked=false;
+})
+}
+
+
+$(".checkSingle").click(function () {
+if ($(this).is(":checked")){
+console.log("aqui estoy b");
+var isAllChecked = 0;
+$(".checkSingle").each(function(){
+if(!this.checked)
+isAllChecked = 1;
+})
+if(isAllChecked == 0){ $("#checkedAll").prop("checked", true); }
+}else {
+$("#checkedAll").prop("checked", false);
+}
+});
+});
+};
+
+
+
+<div class="nrcsubsection"><input name="Hide Selected" type="button" value="Hide Selected"/><input name="Show All"
+                                                                                                   type="button"
+                                                                                                   value="Show All"/>
+</div>
+
+<div class="nrcsubsection">&nbsp;</div>
+<!-- This is a spacer for when there are multiple tables in a section.  Can be deleted if only one table in the section -->
+
+<table>
+    <thead>
+    <tr>
+        <th class="nrcinfoheader">&nbsp;</th>
+        <th class="nrcinfoheader">Enrollment</th>
+        <th class="nrcdataheader" colspan="2">IDPs</th>
+        <th class="nrcdataheader" colspan="2" scope="col">Refugees</th>
+        <th class="nrcdataheader" colspan="2" scope="col">Host Community</th>
+        <th class="nrcdataheader" colspan="2" scope="col">Other</th>
+        <th class="nrctotalheader" colspan="1" scope="col">Total</th>
+    </tr>
+    <tr>
+        <th class="nrcinfoheader">&nbsp;</th>
+        <th class="nrcinfoheader">&nbsp;</th>
+        <th class="nrcdataheader">Males</th>
+        <th class="nrcdataheader">Females</th>
+        <th class="nrcdataheader">Males</th>
+        <th class="nrcdataheader">Females</th>
+        <th class="nrcdataheader">Males</th>
+        <th class="nrcdataheader">Females</th>
+        <th class="nrcdataheader">Males</th>
+        <th class="nrcdataheader">Females</th>
+        <th class="nrctotalheader">&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody class="searchable">
+    <tr id="rowGL-EY1">
+        <td class="nrcindicatorName"><input checked="unchecked" name="GL-EY" type="checkbox" value=""
+                                            class="checkSingle"/></td>
+        <td class="nrcindicatorName"># of learners enrolled YEP (GL-E1/Y)</td>
+        <td><input id="z9UmScdI2ua-Jsj0zseyZRy-val"
+                   title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - Jsj0zseyZRy - Male, IDP - INTEGER"
+                   value="[ GL-E1/Y: # of learners enrolled (YEP) Male, IDP ]"/></td>
+        <td><input id="z9UmScdI2ua-TSItPcR5Co0-val"
+                   title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - TSItPcR5Co0 - Female, IDP - INTEGER"
+                   value="[ GL-E1/Y: # of learners enrolled (YEP) Female, IDP ]"/></td>
+        <td><input id="z9UmScdI2ua-LrwymE2so9E-val"
+                   title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - LrwymE2so9E - Male, Refugee - INTEGER"
+                   value="[ GL-E1/Y: # of learners enrolled (YEP) Male, Refugee ]"/></td>
+        <td><input id="z9UmScdI2ua-fgK1KOTsYTX-val"
+                   title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - fgK1KOTsYTX - Female, Refugee - INTEGER"
+                   value="[ GL-E1/Y: # of learners enrolled (YEP) Female, Refugee ]"/></td>
+        <td><input id="z9UmScdI2ua-LtjBY2tHrCQ-val"
+                   title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - LtjBY2tHrCQ - Male, Host Community - INTEGER"
+                   value="[ GL-E1/Y: # of learners enrolled (YEP) Male, Host Community ]"/></td>
+        <td><input id="z9UmScdI2ua-n4G7V7Ij9M8-val"
+                   title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - n4G7V7Ij9M8 - Female, Host Community - INTEGER"
+                   value="[ GL-E1/Y: # of learners enrolled (YEP) Female, Host Community ]"/></td>
+        <td><input id="z9UmScdI2ua-mDkp8daNEq9-val"
+                   title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - mDkp8daNEq9 - Male, Other - INTEGER"
+                   value="[ GL-E1/Y: # of learners enrolled (YEP) Male, Other ]"/></td>
+        <td><input id="z9UmScdI2ua-DUVdAs0fh3D-val"
+                   title="z9UmScdI2ua - GL-E1/Y: # of learners enrolled (YEP) - DUVdAs0fh3D - Female, Other - INTEGER"
+                   value="[ GL-E1/Y: # of learners enrolled (YEP) Female, Other ]"/></td>
+        <td class="lastinrow"><input dataelementid="z9UmScdI2ua" id="totalz9UmScdI2ua" name="total" readonly="readonly"
+                                     title="GL-E1/Y: # of learners enrolled (YEP)"
+                                     value="[ GL-E1/Y: # of learners enrolled (YEP) ]"/></td>
+    </tr>
+    <tr id="rowGL-E1A">
+        <td class="nrcindicatorName"><input checked="unchecked" name="GL-EA" type="checkbox" value=""
+                                            class="checkSingle"/></td>
+        <td class="nrcindicatorName"># of learners enrolled Accelerated Learning (GL-E1/A)</td>
+        <td><input id="GFd19TMOHqT-Jsj0zseyZRy-val"
+                   title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - Jsj0zseyZRy - Male, IDP - INTEGER"
+                   value="[ GL-E1/A: # of learners enrolled (AE) Male, IDP ]"/></td>
+        <td><input id="GFd19TMOHqT-TSItPcR5Co0-val"
+                   title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - TSItPcR5Co0 - Female, IDP - INTEGER"
+                   value="[ GL-E1/A: # of learners enrolled (AE) Female, IDP ]"/></td>
+        <td><input id="GFd19TMOHqT-LrwymE2so9E-val"
+                   title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - LrwymE2so9E - Male, Refugee - INTEGER"
+                   value="[ GL-E1/A: # of learners enrolled (AE) Male, Refugee ]"/></td>
+        <td><input id="GFd19TMOHqT-fgK1KOTsYTX-val"
+                   title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - fgK1KOTsYTX - Female, Refugee - INTEGER"
+                   value="[ GL-E1/A: # of learners enrolled (AE) Female, Refugee ]"/></td>
+        <td><input id="GFd19TMOHqT-LtjBY2tHrCQ-val"
+                   title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - LtjBY2tHrCQ - Male, Host Community - INTEGER"
+                   value="[ GL-E1/A: # of learners enrolled (AE) Male, Host Community ]"/></td>
+        <td><input id="GFd19TMOHqT-n4G7V7Ij9M8-val"
+                   title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - n4G7V7Ij9M8 - Female, Host Community - INTEGER"
+                   value="[ GL-E1/A: # of learners enrolled (AE) Female, Host Community ]"/></td>
+        <td><input id="GFd19TMOHqT-mDkp8daNEq9-val"
+                   title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - mDkp8daNEq9 - Male, Other - INTEGER"
+                   value="[ GL-E1/A: # of learners enrolled (AE) Male, Other ]"/></td>
+        <td><input id="GFd19TMOHqT-DUVdAs0fh3D-val"
+                   title="GFd19TMOHqT - GL-E1/A: # of learners enrolled (AE) - DUVdAs0fh3D - Female, Other - INTEGER"
+                   value="[ GL-E1/A: # of learners enrolled (AE) Female, Other ]"/></td>
+        <td class="lastinrow"><input dataelementid="GFd19TMOHqT" id="totalGFd19TMOHqT" name="total" readonly="readonly"
+                                     title="GL-E1/A: # of learners enrolled (AE)"
+                                     value="[ GL-E1/A: # of learners enrolled (AE) ]"/></td>
+    </tr>
+    <tr id="rowGL-E1E">
+        <td class="nrcindicatorName"><input checked="unchecked" name="GL-EE" type="checkbox" value=""
+                                            class="checkSingle"/></td>
+        <td class="nrcindicatorName"># of learners enrolled EiE (GL-E1/E)</td>
+        <td><input id="yB0sFkRnDIK-Jsj0zseyZRy-val"
+                   title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - Jsj0zseyZRy - Male, IDP - INTEGER"
+                   value="[ GL-E1/E: # of learners enrolled (EiE) Male, IDP ]"/></td>
+        <td><input id="yB0sFkRnDIK-TSItPcR5Co0-val"
+                   title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - TSItPcR5Co0 - Female, IDP - INTEGER"
+                   value="[ GL-E1/E: # of learners enrolled (EiE) Female, IDP ]"/></td>
+        <td><input id="yB0sFkRnDIK-LrwymE2so9E-val"
+                   title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - LrwymE2so9E - Male, Refugee - INTEGER"
+                   value="[ GL-E1/E: # of learners enrolled (EiE) Male, Refugee ]"/></td>
+        <td><input id="yB0sFkRnDIK-fgK1KOTsYTX-val"
+                   title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - fgK1KOTsYTX - Female, Refugee - INTEGER"
+                   value="[ GL-E1/E: # of learners enrolled (EiE) Female, Refugee ]"/></td>
+        <td><input id="yB0sFkRnDIK-LtjBY2tHrCQ-val"
+                   title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - LtjBY2tHrCQ - Male, Host Community - INTEGER"
+                   value="[ GL-E1/E: # of learners enrolled (EiE) Male, Host Community ]"/></td>
+        <td><input id="yB0sFkRnDIK-n4G7V7Ij9M8-val"
+                   title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - n4G7V7Ij9M8 - Female, Host Community - INTEGER"
+                   value="[ GL-E1/E: # of learners enrolled (EiE) Female, Host Community ]"/></td>
+        <td><input id="yB0sFkRnDIK-mDkp8daNEq9-val"
+                   title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - mDkp8daNEq9 - Male, Other - INTEGER"
+                   value="[ GL-E1/E: # of learners enrolled (EiE) Male, Other ]"/></td>
+        <td><input id="yB0sFkRnDIK-DUVdAs0fh3D-val"
+                   title="yB0sFkRnDIK - GL-E1/E: # of learners enrolled (EiE) - DUVdAs0fh3D - Female, Other - INTEGER"
+                   value="[ GL-E1/E: # of learners enrolled (EiE) Female, Other ]"/></td>
+        <td class="lastinrow"><input dataelementid="yB0sFkRnDIK" id="totalyB0sFkRnDIK" name="total" readonly="readonly"
+                                     title="GL-E1/E: # of learners enrolled (EiE)"
+                                     value="[ GL-E1/E: # of learners enrolled (EiE) ]"/></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="nrcsubsection">&nbsp;</div>
